@@ -1,0 +1,5 @@
+# Chart Summary
+
+I choosed this chart in my assignmet, which is using Amman Digital Market data after it being cleaned, for comparing the order value distribution across product categories.
+I used The boxplot because It shows clearly the median, spread, and the outliers of ech category. This makes the process of evaluating the differences between the categories easier just by using the averages.
+As you can see, the chart shows that Books has the highest typical order values, while the order values of Food & Beverages and Sports tend to be lower. Also, the Electronics show a wide spread, that means theres is greater variation in order values. This is improtant beacause it shows the difference in the customer spending behavior between categories, and this can help in support pricing, promotion, and inventory decisions.

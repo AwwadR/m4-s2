@@ -43,6 +43,7 @@ def read_table_via_docker(table_name):
 
 def main():
     os.makedirs("contributions/AwwadR", exist_ok=True)
+
     sns.set_theme(style="whitegrid")
     sns.set_palette("colorblind")
 
@@ -51,14 +52,17 @@ def main():
     orders = read_table_via_docker("orders")
     order_items = read_table_via_docker("order_items")
 
+    # cleaning
     orders = orders[orders["status"] != "cancelled"].copy()
     order_items = order_items[order_items["quantity"] <= 100].copy()
     customers["city"] = customers["city"].fillna("Unknown")
 
+    # merge
     df = order_items.merge(orders, on="order_id", how="inner")
     df = df.merge(products, on="product_id", how="inner")
     df = df.merge(customers, on="customer_id", how="inner")
 
+    # feature engineering
     df["line_revenue"] = df["quantity"] * df["unit_price"]
 
     order_category_values = (
@@ -67,12 +71,35 @@ def main():
         .rename(columns={"line_revenue": "category_order_value"})
     )
 
+    category_order = [
+        "Clothing",
+        "Electronics",
+        "Food & Beverage",
+        "Books",
+        "Sports",
+        "Home & Garden",
+    ]
+
     plt.figure(figsize=(10, 6))
-    sns.boxplot(data=order_category_values, x="category", y="category_order_value")
-    plt.title("Books Show Higher Order Values Than Most Categories")
-    plt.xlabel("Product Category")
-    plt.ylabel("Order Value (JOD)")
+    ax = sns.boxplot(
+        data=order_category_values,
+        x="category",
+        y="category_order_value",
+        order=["Clothing", "Electronics", "Food & Beverage", "Books", "Sports", "Home & Garden"]
+    )
+
+    ax.set_title("Books Show Higher Typical Order Values Than Most Categories")
+    ax.set_xlabel("Product Category")
+    ax.set_ylabel("Order Value per Order (JOD)")
     plt.xticks(rotation=45)
+
+    ax.annotate(
+        "Highest median",
+        xy=(3, 62),
+        xytext=(3.15, 90),
+        arrowprops=dict(arrowstyle="->")
+    )
+
     plt.tight_layout()
     plt.savefig("contributions/AwwadR/chart.png", dpi=150, bbox_inches="tight")
     plt.close()
